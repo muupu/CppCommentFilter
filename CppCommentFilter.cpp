@@ -1,4 +1,4 @@
-#include   <iostream>   
+ï»¿#include   <iostream>   
 #include   <fstream>   
 #include   <string>   
 using   namespace   std;   
@@ -7,10 +7,10 @@ class   CppCommentFilter
 {   
 public:   
         CppCommentFilter(istream *  i=0, ostream *  o1=0, ostream * o2=0);   
-        //                ÊäÈëÔ´£¬         ÎÄ¼şÊä³öÔ´£¬    ×¢ÊÍÊä³öÔ´   
+        //                è¾“å…¥æºï¼Œ         æ–‡ä»¶è¾“å‡ºæºï¼Œ    æ³¨é‡Šè¾“å‡ºæº   
         bool   Work();   
         string::size_type   LineNumber()   const;   
-        //³öÏÖ´íÎóÊ±·µ»ØĞĞÊı   
+        //å‡ºç°é”™è¯¯æ—¶è¿”å›è¡Œæ•°   
 private:   
         istream   *from;   
         ostream   *to1,*to2;   
@@ -18,15 +18,15 @@ private:
         string::size_type   pos,size,LineNum;   
         enum   Status{Normal,DivStart,DivDiv,Quotation,DoubleQuotation,Finish};   
         /*   
-        Ã¶¾ÙÖµ´ú±í     Õı³£    /*      //        '             "         ½áÊø    ×´Ì¬   
+        æšä¸¾å€¼ä»£è¡¨     æ­£å¸¸    /*      //        '             "         ç»“æŸ    çŠ¶æ€   
         */   
         Status   S;   
         void   NewLine();   
-        void   NormalFunc();    //Õı³£×´Ì¬   
-        void   DivStartFunc();  //½øÈë  /*µÄ×´Ì¬   
-        void   DivDivFunc();    //½øÈë  //µÄ×´Ì¬   
-        void   QuotationFunc();//½øÈë  'µÄ×´Ì¬   
-        void   DoubleQuotationFunc();//½øÈë   "µÄ×´Ì¬   
+        void   NormalFunc();    //æ­£å¸¸çŠ¶æ€   
+        void   DivStartFunc();  //è¿›å…¥  /*çš„çŠ¶æ€   
+        void   DivDivFunc();    //è¿›å…¥  //çš„çŠ¶æ€   
+        void   QuotationFunc();//è¿›å…¥  'çš„çŠ¶æ€   
+        void   DoubleQuotationFunc();//è¿›å…¥   "çš„çŠ¶æ€   
         typedef   void   (CppCommentFilter::*ptrf)();   
         ptrf   array[5];   
 };   
@@ -59,9 +59,9 @@ bool   CppCommentFilter::Work()
         size=Line.size();   
         ++LineNum;   
         while(true){   
-                if(S==Finish)   return   false;//ÎÄ¼şÖĞ×¢ÊÍÓĞ´íÎó   
-                if(!*from)   return   true;//ÎÄ¼ş½áÊø   
-                (this->*array[S])();//¸Ã¹ı³Ì»áĞŞ¸ÄSÖµ   
+                if(S==Finish)   return   false;//æ–‡ä»¶ä¸­æ³¨é‡Šæœ‰é”™è¯¯   
+                if(!*from)   return   true;//æ–‡ä»¶ç»“æŸ   
+                (this->*array[S])();//è¯¥è¿‡ç¨‹ä¼šä¿®æ”¹Så€¼   
         }
 }   
 
@@ -76,7 +76,7 @@ void   CppCommentFilter::NewLine()
         }   
 }   
 
-void   CppCommentFilter::NormalFunc()   //Õı³£×´Ì¬ 
+void   CppCommentFilter::NormalFunc()   //æ­£å¸¸çŠ¶æ€ 
 {   
         if(Line.empty()||pos==size){   
                 NewLine();   
@@ -114,7 +114,7 @@ void   CppCommentFilter::NormalFunc()   //Õı³£×´Ì¬
         }   
 }   
 
-void   CppCommentFilter::DivStartFunc()   //½øÈë   /*µÄ×´Ì¬ 
+void   CppCommentFilter::DivStartFunc()   //è¿›å…¥   /*çš„çŠ¶æ€ 
 {   
         for(;pos<size;++pos){   
                 if(to2)   *to2<<Line[pos];   
@@ -128,7 +128,7 @@ void   CppCommentFilter::DivStartFunc()   //½øÈë   /*µÄ×´Ì¬
         if(pos==size)   NewLine();   
 }   
 
-void   CppCommentFilter::DivDivFunc()   //½øÈë   //µÄ×´Ì¬  
+void   CppCommentFilter::DivDivFunc()   //è¿›å…¥   //çš„çŠ¶æ€  
 {   
         for(;pos<size;++pos){   
                 if(to2)   *to2<<Line[pos];   
@@ -136,7 +136,7 @@ void   CppCommentFilter::DivDivFunc()   //½øÈë   //µÄ×´Ì¬
         S=Normal;   
 }   
 
-void   CppCommentFilter::QuotationFunc()   //½øÈë   'µÄ×´Ì¬ 
+void   CppCommentFilter::QuotationFunc()   //è¿›å…¥   'çš„çŠ¶æ€ 
 {   
         if(Line[pos]=='\\'   &&   pos+2<size   &&   Line[pos+2]=='\''){   
                 if(to1)   *to1<<Line[pos]<<Line[pos+1]<<Line[pos+2];   
@@ -153,7 +153,7 @@ void   CppCommentFilter::QuotationFunc()   //½øÈë   'µÄ×´Ì¬
         S=Finish;   
 } 
 
-void   CppCommentFilter::DoubleQuotationFunc()   //½øÈë   "µÄ×´Ì¬ 
+void   CppCommentFilter::DoubleQuotationFunc()   //è¿›å…¥   "çš„çŠ¶æ€ 
 {   
         for(;pos<size;++pos){   
                 if(to1)   *to1<<Line[pos];   
@@ -174,11 +174,11 @@ int  main()
 	    cin >> name;
 	
         ifstream   inf(name.c_str());   
-        ofstream   outf1("É¾³ı×¢ÊÍºóµÄ´úÂë.cpp");   //Éú³É²»º¬×¢ÊÍµÄcppÎÄ¼ş
-        ofstream   outf2("×¢ÊÍ.txt");   //Éú³ÉÖ»º¬×¢ÊÍµÄÎÄ¼ş
+        ofstream   outf1("åˆ é™¤æ³¨é‡Šåçš„ä»£ç .cpp");   //ç”Ÿæˆä¸å«æ³¨é‡Šçš„cppæ–‡ä»¶
+        ofstream   outf2("æ³¨é‡Š.txt");   //ç”Ÿæˆåªå«æ³¨é‡Šçš„æ–‡ä»¶
         
 	
         CppCommentFilter   T(&inf,&outf1,&outf2);   
-        if(T.Work()==false)   cout<<"error   at   line#"<<T.LineNumber();   //Êä³ö´íÎóµÄ×¢ÊÍËùÔÚĞĞ
+        if(T.Work()==false)   cout<<"error   at   line#"<<T.LineNumber();   //è¾“å‡ºé”™è¯¯çš„æ³¨é‡Šæ‰€åœ¨è¡Œ
         return 0;
 }
